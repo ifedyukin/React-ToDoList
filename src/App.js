@@ -8,23 +8,13 @@ import LeftItems from './LeftItems';
 import ListSelector from './ListSelector';
 import GlobalAction from './GlobalAction';
 
-const items = [
-  {
-    value: "Test",
-    checked: true
-  },
-  {
-    value: "Lorem Ipsum Dolor",
-    checked: false
-  }
-];
-
+//Func for display all items
 const filterAll = function () {
   return (
     <div className="panel panel-default">
       <div className="panel-body">
-        <New />
-        <List items={items} type="all" />
+        <New context={this} value={this.state.search} />
+        <List items={this.state.items} type="all" search={this.state.search} />
       </div>
 
       <div className="panel-footer">
@@ -36,12 +26,13 @@ const filterAll = function () {
   )
 }
 
+//Func for display only active items
 const filterActive = function () {
   return (
     <div className="panel panel-default">
       <div className="panel-body">
-        <New />
-        <List items={items} type="active" />
+        <New context={this} value={this.state.search} />
+        <List items={this.state.items} type="active" search={this.state.search} />
       </div>
 
       <div className="panel-footer">
@@ -53,12 +44,13 @@ const filterActive = function () {
   )
 }
 
+//Func for display only completed items
 const filterCompleted = function () {
   return (
     <div className="panel panel-default">
       <div className="panel-body">
-        <New />
-        <List items={items} type="completed" />
+        <New context={this} value={this.state.search} />
+        <List items={this.state.items} type="completed" search={this.state.search} />
       </div>
 
       <div className="panel-footer">
@@ -70,11 +62,25 @@ const filterCompleted = function () {
   )
 }
 
+//"Generate" key for Router
+let reloadCounter = 0;
+
 class App extends Component {
+  //Store emulator
+  items = [{
+    value: "Test",
+    checked: true
+  },
+  {
+    value: "Lorem Ipsum Dolor",
+    checked: false
+  }];
   constructor(props) {
     super(props);
     this.state = {
-      leftCount: this.countLeft(items)
+      search: '',
+      items: this.items,
+      leftCount: this.countLeft(this.items)
     }
   }
 
@@ -88,12 +94,32 @@ class App extends Component {
     return count;
   }
 
+  item(text) {
+    return {
+      value: text,
+      checked: false
+    }
+  }
+
+  handleAdd(item) {
+    var newItem = new this.item(item);
+    this.state.items.unshift(newItem);
+    this.setState(({ leftCount: this.countLeft(this.state.items) }));
+    this.setState({ search: '' });
+    reloadCounter++;
+  }
+
+  handleSearch(text) {
+    this.setState({ search: text });
+    reloadCounter++;
+  }
+
   render() {
     return (
       <section>
         <h1>ToDo List</h1>
 
-        <Router history={hashHistory}>
+        <Router history={hashHistory} key={reloadCounter}>
           <Route path="/" component={filterAll.bind(this)} />
           <Route path="/active" component={filterActive.bind(this)} />
           <Route path="/completed" component={filterCompleted.bind(this)} />
@@ -102,6 +128,7 @@ class App extends Component {
       </section>
     )
   }
+
 }
 
 export default App;

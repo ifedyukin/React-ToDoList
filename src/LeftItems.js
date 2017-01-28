@@ -1,11 +1,6 @@
 import React, { Component } from 'react';
 
 class LeftItems extends Component {
-    constructor(props) {
-        super(props);
-        this.state = {};
-    }
-
     render() {
         return (
             <div className="left_count">

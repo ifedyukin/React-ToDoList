@@ -6,7 +6,7 @@ class List extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            items: this.filter(this.props.items, this.props.type)
+            items: this.filter(this.props.items, this.props.type, this.props.search)
         }
     }
 
@@ -20,22 +20,30 @@ class List extends Component {
         )
     }
 
-    filter(items, type) {
+    filter(items, type, search) {
         let result = [];
         if (type === "active") {
             for (let i = 0; i < items.length; i++) {
                 if (!items[i].checked) {
-                    result.push(items[i]);
+                    if (items[i].value.toLowerCase().indexOf(search.toLowerCase()) !== -1) {
+                        result.push(items[i]);
+                    }
                 }
             }
         } else if (type === "completed") {
             for (let i = 0; i < items.length; i++) {
                 if (items[i].checked) {
-                    result.push(items[i]);
+                    if (items[i].value.toLowerCase().indexOf(search.toLowerCase()) !== -1) {
+                        result.push(items[i]);
+                    }
                 }
             }
         } else {
-            result = items;
+            for (let i = 0; i < items.length; i++) {
+                if (items[i].value.toLowerCase().indexOf(search.toLowerCase()) !== -1) {
+                    result.push(items[i]);
+                }
+            }
         }
         return result;
     }
