@@ -9,7 +9,7 @@ class LeftItems extends Component {
     render() {
         return (
             <div className="left_count">
-                <span className="label label-default">{this.props.count} item left</span>
+                <span className="label label-default">{this.props.value} item left</span>
             </div>
         )
     }

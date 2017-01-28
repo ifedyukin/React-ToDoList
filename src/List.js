@@ -1,13 +1,51 @@
-import React, { Component } from 'react';
+import React, { Component, PropTypes } from 'react';
 
 import Item from './Item';
 
 class List extends Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            items: this.filter(this.props.items, this.props.type)
+        }
+    }
+
+    static propTypes = {
+        type: PropTypes.string.isRequired,
+        items: PropTypes.arrayOf(
+            PropTypes.shape({
+                value: PropTypes.string.isRequired,
+                checked: PropTypes.bool.isRequired
+            })
+        )
+    }
+
+    filter(items, type) {
+        let result = [];
+        if (type === "active") {
+            for (let i = 0; i < items.length; i++) {
+                if (!items[i].checked) {
+                    result.push(items[i]);
+                }
+            }
+        } else if (type === "completed") {
+            for (let i = 0; i < items.length; i++) {
+                if (items[i].checked) {
+                    result.push(items[i]);
+                }
+            }
+        } else {
+            result = items;
+        }
+        return result;
+    }
+
     render() {
         return (
             <ul className="list-group items_list">
-                <Item text="Test" check/>           
-                <Item text="Lorem Ipsum DOlor"/>                
+                {this.state.items.map((item, index) =>
+                    <Item value={item.value} key={index} checked={item.checked} />
+                )}
             </ul>
         )
     }
