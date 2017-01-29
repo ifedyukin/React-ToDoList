@@ -8,6 +8,7 @@ import LeftItems from './LeftItems';
 import ListSelector from './ListSelector';
 import GlobalAction from './GlobalAction';
 import Alert from './Alert';
+import { storeGet, storeSave } from './Store';
 
 //Func for display all items
 const filterAll = function () {
@@ -74,22 +75,11 @@ let reloadCounter = 0;
 
 /* App */
 class App extends Component {
-  //Store emulator
-  items = [{
-    id: 1,
-    value: "Test",
-    checked: true
-  },
-  {
-    id: 2,
-    value: "Lorem Ipsum Dolor",
-    checked: false
-  }];
   constructor(props) {
     super(props);
     this.state = {
       search: '',
-      items: this.items,
+      items: storeGet() === null ? [] : storeGet(),
       leftCount: this.countLeft(this.items),
       alert: {
         value: '',
@@ -105,9 +95,13 @@ class App extends Component {
   //Return counter of active items
   countLeft(items) {
     let count = 0;
-    for (let i = 0; i < items.length; i++) {
-      if (!items[i].checked) {
-        count++;
+    if (items === undefined) {
+      count = 0;
+    } else {
+      for (let i = 0; i < items.length; i++) {
+        if (!items[i].checked) {
+          count++;
+        }
       }
     }
     return count;
@@ -136,6 +130,7 @@ class App extends Component {
       this.state.items.push(newItem);
       this.setState(({ leftCount: this.countLeft(this.state.items) }));
       this.setState({ search: '' });
+      storeSave(this.state.items);
       reloadCounter++;
     }
   }
@@ -158,6 +153,7 @@ class App extends Component {
     this.setState({ search: this.state.search });
     this.setState({ items: itemsList });
     this.setState(({ leftCount: this.countLeft(this.state.items) }));
+    storeSave(this.state.items);
     reloadCounter++;
   }
 
@@ -173,6 +169,7 @@ class App extends Component {
     this.setState({ items: itemsList });
     this.setState(({ leftCount: this.countLeft(this.state.items) }));
     this.alert("Item was deleted!", true, "success");
+    storeSave(this.state.items);
     reloadCounter++;
   }
 
@@ -187,6 +184,7 @@ class App extends Component {
         }
       }
       this.setState({ search: this.state.search });
+      storeSave(this.state.items);
       reloadCounter++;
     }
   }
@@ -220,6 +218,7 @@ class App extends Component {
     }
     this.setState({ items: newList });
     this.alert("Completed items were deleted!", true, "success");
+    storeSave(this.state.items);
     reloadCounter++;
   }
 
@@ -231,6 +230,7 @@ class App extends Component {
     }
     this.setState({ items: itemsList });
     this.alert("All items were checked!", true, "success");
+    storeSave(this.state.items);
     reloadCounter++;
   }
 
