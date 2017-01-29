@@ -14,6 +14,7 @@ class List extends Component {
         type: PropTypes.string.isRequired,
         items: PropTypes.arrayOf(
             PropTypes.shape({
+                id: PropTypes.number.isRequired,
                 value: PropTypes.string.isRequired,
                 checked: PropTypes.bool.isRequired
             })
@@ -23,7 +24,7 @@ class List extends Component {
     filter(items, type, search) {
         let result = [];
         if (type === "active") {
-            for (let i = 0; i < items.length; i++) {
+            for (let i = items.length-1; i >= 0; i--) {
                 if (!items[i].checked) {
                     if (items[i].value.toLowerCase().indexOf(search.toLowerCase()) !== -1) {
                         result.push(items[i]);
@@ -31,7 +32,7 @@ class List extends Component {
                 }
             }
         } else if (type === "completed") {
-            for (let i = 0; i < items.length; i++) {
+            for (let i = items.length-1; i >= 0; i--) {
                 if (items[i].checked) {
                     if (items[i].value.toLowerCase().indexOf(search.toLowerCase()) !== -1) {
                         result.push(items[i]);
@@ -39,7 +40,7 @@ class List extends Component {
                 }
             }
         } else {
-            for (let i = 0; i < items.length; i++) {
+            for (let i = items.length-1; i >= 0; i--) {
                 if (items[i].value.toLowerCase().indexOf(search.toLowerCase()) !== -1) {
                     result.push(items[i]);
                 }
@@ -52,7 +53,7 @@ class List extends Component {
         return (
             <ul className="list-group items_list">
                 {this.state.items.map((item, index) =>
-                    <Item value={item.value} key={index} checked={item.checked} />
+                    <Item value={item.value} key={item.id} id={item.id} checked={item.checked} context={this.props.context}/>
                 )}
             </ul>
         )

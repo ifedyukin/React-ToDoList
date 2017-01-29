@@ -7,6 +7,7 @@ import List from './List';
 import LeftItems from './LeftItems';
 import ListSelector from './ListSelector';
 import GlobalAction from './GlobalAction';
+import Alert from './Alert';
 
 //Func for display all items
 const filterAll = function () {
@@ -14,13 +15,15 @@ const filterAll = function () {
     <div className="panel panel-default">
       <div className="panel-body">
         <New context={this} value={this.state.search} />
-        <List items={this.state.items} type="all" search={this.state.search} />
+        <List items={this.state.items} type="all" search={this.state.search} context={this} />
+        <Alert value={this.state.alert.value} visible={this.state.alert.visible}
+          context={this} type={this.state.alert.type} />
       </div>
 
       <div className="panel-footer">
         <LeftItems value={this.state.leftCount} />
         <ListSelector active="all" />
-        <GlobalAction />
+        <GlobalAction context={this} />
       </div>
     </div >
   )
@@ -32,13 +35,15 @@ const filterActive = function () {
     <div className="panel panel-default">
       <div className="panel-body">
         <New context={this} value={this.state.search} />
-        <List items={this.state.items} type="active" search={this.state.search} />
+        <List items={this.state.items} type="active" search={this.state.search} context={this} />
+        <Alert value={this.state.alert.value} visible={this.state.alert.visible}
+          context={this} type={this.state.alert.type} />
       </div>
 
       <div className="panel-footer">
         <LeftItems value={this.state.leftCount} />
         <ListSelector active="active" />
-        <GlobalAction />
+        <GlobalAction context={this} />
       </div>
     </div >
   )
@@ -50,13 +55,15 @@ const filterCompleted = function () {
     <div className="panel panel-default">
       <div className="panel-body">
         <New context={this} value={this.state.search} />
-        <List items={this.state.items} type="completed" search={this.state.search} />
+        <List items={this.state.items} type="completed" search={this.state.search} context={this} />
+        <Alert value={this.state.alert.value} visible={this.state.alert.visible}
+          context={this} type={this.state.alert.type} />
       </div>
 
       <div className="panel-footer">
         <LeftItems value={this.state.leftCount} />
         <ListSelector active="completed" />
-        <GlobalAction />
+        <GlobalAction context={this} />
       </div>
     </div >
   )
@@ -65,13 +72,16 @@ const filterCompleted = function () {
 //"Generate" key for Router
 let reloadCounter = 0;
 
+/* App */
 class App extends Component {
   //Store emulator
   items = [{
+    id: 1,
     value: "Test",
     checked: true
   },
   {
+    id: 2,
     value: "Lorem Ipsum Dolor",
     checked: false
   }];
@@ -80,10 +90,19 @@ class App extends Component {
     this.state = {
       search: '',
       items: this.items,
-      leftCount: this.countLeft(this.items)
+      leftCount: this.countLeft(this.items),
+      alert: {
+        value: '',
+        visible: false,
+        type: "error"
+      }
     }
+
+    this.deleteCompleted = this.deleteCompleted.bind(this);
+    this.checkAll = this.checkAll.bind(this);
   }
 
+  //Return counter of active items
   countLeft(items) {
     let count = 0;
     for (let i = 0; i < items.length; i++) {
@@ -94,23 +113,124 @@ class App extends Component {
     return count;
   }
 
-  item(text) {
-    return {
-      value: text,
-      checked: false
+  //Add item func
+  handleAdd(item) {
+    function listItem(num, text) {
+      return {
+        id: num,
+        value: text,
+        checked: false
+      }
+    }
+
+    if (item.length === 0) {
+      this.alert("Empty value for item!", true, "error");
+    } else {
+      let newId = 0;
+      if (this.state.items[this.state.items.length - 1] !== undefined) {
+        newId = this.state.items[this.state.items.length - 1].id + 1
+      } else {
+        newId = 1;
+      }
+      var newItem = new listItem(newId, item);
+      this.state.items.push(newItem);
+      this.setState(({ leftCount: this.countLeft(this.state.items) }));
+      this.setState({ search: '' });
+      reloadCounter++;
     }
   }
 
-  handleAdd(item) {
-    var newItem = new this.item(item);
-    this.state.items.unshift(newItem);
-    this.setState(({ leftCount: this.countLeft(this.state.items) }));
-    this.setState({ search: '' });
+  //Search func
+  handleSearch(text) {
+    this.setState({ search: text });
+    this.alert("No result!", true, "error");
     reloadCounter++;
   }
 
-  handleSearch(text) {
-    this.setState({ search: text });
+  //Check item func
+  checkItem(id) {
+    let itemsList = this.state.items;
+    for (let i = 0; i < itemsList.length; i++) {
+      if (itemsList[i].id === id) {
+        itemsList[i].checked = !itemsList[i].checked;
+      }
+    }
+    this.setState({ search: this.state.search });
+    this.setState({ items: itemsList });
+    this.setState(({ leftCount: this.countLeft(this.state.items) }));
+    reloadCounter++;
+  }
+
+  //Delete item func
+  deleteItem(id) {
+    let itemsList = this.state.items;
+    for (let i = 0; i < itemsList.length; i++) {
+      if (itemsList[i].id === id) {
+        itemsList.splice(i, 1);
+      }
+    }
+    this.setState({ search: this.state.search });
+    this.setState({ items: itemsList });
+    this.setState(({ leftCount: this.countLeft(this.state.items) }));
+    this.alert("Item was deleted!", true, "success");
+    reloadCounter++;
+  }
+
+  //Rename item func
+  editItem(id, value) {
+    if (value.length === 0) {
+      this.alert("Empty value for item!", true, "error");
+    } else {
+      for (let i = 0; i < this.items.length; i++) {
+        if (this.items[i].id === id) {
+          this.items[i].value = value;
+        }
+      }
+      this.setState({ search: this.state.search });
+      reloadCounter++;
+    }
+  }
+
+  //Alerts for user
+  alert(value, visible, type) {
+    this.setState({ alert: { value: value, visible: visible, type: type } });
+    var context = this;
+
+    //Hide alert for 1.5 sec
+    function hideAlert() {
+      reloadCounter++;
+      context.setState({ alert: { value: "", visible: false, type: "type" } });
+      reloadCounter++;
+    }
+    setTimeout(function () {
+      hideAlert();
+    }, 1500);
+
+    reloadCounter++;
+  }
+
+  //Delete completed items func
+  deleteCompleted() {
+    let newList = [];
+    let itemsList = this.state.items;
+    for (let i = 0; i < itemsList.length; i++) {
+      if (!itemsList[i].checked) {
+        newList.push(itemsList[i]);
+      }
+    }
+    this.setState({ items: newList });
+    this.alert("Completed items were deleted!", true, "success");
+    reloadCounter++;
+  }
+
+  //Func for check all items
+  checkAll() {
+    let itemsList = this.state.items;
+    for (let i = 0; i < itemsList.length; i++) {
+      itemsList[i].checked = true;
+    }
+    this.setState({ items: itemsList });
+    this.alert("All items were checked!", true, "success");
     reloadCounter++;
   }
 

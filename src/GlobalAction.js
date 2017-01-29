@@ -5,9 +5,9 @@ class GlobalAction extends Component {
         return (
             <div className="clear_completed">
                 <div className="btn-group" role="group">
-                    <button type="button" className="btn btn-success">
+                    <button onClick={this.props.context.checkAll} type="button" className="btn btn-success">
                         <span className="glyphicon glyphicon-ok" aria-hidden="true"></span></button>
-                    <button type="button" className="btn btn-danger">
+                    <button onClick={this.props.context.deleteCompleted} type="button" className="btn btn-danger">
                         <span className="glyphicon glyphicon-trash" aria-hidden="true"></span></button>
                 </div>
             </div>

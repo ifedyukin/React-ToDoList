@@ -54,6 +54,8 @@ section{
     border: none;
     float: right;
     padding: 0;
+    margin-right: -7px;
+    margin-top: 3px;
 }
 
 .delete_btn:hover{
@@ -91,4 +93,19 @@ section{
 
 .clear_completed{
     float: right;
+}
+
+.editableItem{
+    width: 93%;
+    height: 30px;
+    margin-top: -4px;
+}
+
+.alert{
+    height: 35px;
+    padding-top: 7px;
+    width: 567px;
+    margin-top: -25px;
+    position: absolute;
+    cursor: pointer;
 }
