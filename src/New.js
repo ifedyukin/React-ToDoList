@@ -3,7 +3,9 @@ import React, { Component } from 'react';
 class New extends Component {
     constructor(props) {
         super(props);
-        this.state = {};
+        this.state = {
+            value: this.props.value
+        };
 
         this.handleSubmit = this.handleSubmit.bind(this);
         this.handleTyping = this.handleTyping.bind(this);
@@ -11,11 +13,12 @@ class New extends Component {
 
     handleSubmit(event) {
         event.preventDefault();
-        this.props.context.handleAdd(this.props.value);
+        this.props.context.handleAdd(this.state.value);
+        this.setState({ value: '' });
     }
 
     handleTyping(event) {
-        this.setState({ userText: event.target.value });
+        this.setState({ value: event.target.value });
         this.props.context.handleSearch(event.target.value);
     }
 
@@ -24,7 +27,7 @@ class New extends Component {
             <form onSubmit={this.handleSubmit} className="input-group">
                 <input type="text" className="form-control" autoFocus
                     placeholder="What needs to be done? Search or add..."
-                    value={this.props.value}
+                    value={this.state.value}
                     onChange={this.handleTyping} />
 
                 <span className="input-group-btn">

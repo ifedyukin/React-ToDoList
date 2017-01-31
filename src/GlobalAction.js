@@ -1,6 +1,10 @@
-import React, { Component } from 'react';
+import React, { Component, PropTypes } from 'react';
 
 class GlobalAction extends Component {
+    static propTypes = {
+        context: PropTypes.object.isRequired
+    }
+
     render() {
         return (
             <div className="clear_completed">

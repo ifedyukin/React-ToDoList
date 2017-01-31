@@ -12,6 +12,5 @@ build
 .env
 npm-debug.log
 
-
 # VSC
 .vscode

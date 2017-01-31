@@ -25,7 +25,7 @@ section{
 }
 
 .items_list{
-    margin-top: 12px;
+    margin-top: 50px;
     text-align: left;
     overflow: auto;
     height: 370px;
@@ -108,4 +108,15 @@ section{
     margin-top: -25px;
     position: absolute;
     cursor: pointer;
+}
+
+.searchNoResult{
+    text-align: center;
+    margin-top: 10px;
+}
+
+.input-group{
+    position: absolute;
+    width: 567px;
+    margin: 17px 16px;
 }

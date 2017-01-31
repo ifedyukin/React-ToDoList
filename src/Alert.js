@@ -1,6 +1,13 @@
-import React, { Component } from 'react';
+import React, { Component, PropTypes } from 'react';
 
 class Alert extends Component {
+    static propTypes = {
+        value: PropTypes.string.isRequired,
+        visible: PropTypes.bool.isRequired,
+        type: PropTypes.string.isRequired,
+        context: PropTypes.object.isRequired
+    }
+
     hide() {
         this.props.context.alert("", false, "");
     }

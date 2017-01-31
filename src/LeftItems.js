@@ -1,6 +1,10 @@
-import React, { Component } from 'react';
+import React, { Component, PropTypes } from 'react';
 
 class LeftItems extends Component {
+    static propTypes = {
+        value: PropTypes.number.isRequired
+    }
+
     render() {
         return (
             <div className="left_count">
