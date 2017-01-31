@@ -35,7 +35,7 @@ const filterActive = function () {
   return (
     <div className="panel panel-default">
       <div className="panel-body">
-        <List items={this.state.items} type="active" search={this.state.search} context={this} />
+        <List items={Search(this.state.items, this.state.search)} type="active" context={this} />
         <Alert value={this.state.alert.value} visible={this.state.alert.visible}
           context={this} type={this.state.alert.type} />
       </div>
@@ -54,7 +54,7 @@ const filterCompleted = function () {
   return (
     <div className="panel panel-default">
       <div className="panel-body">
-        <List items={this.state.items} type="completed" search={this.state.search} context={this} />
+        <List items={Search(this.state.items, this.state.search)} type="completed" context={this} />
         <Alert value={this.state.alert.value} visible={this.state.alert.visible}
           context={this} type={this.state.alert.type} />
       </div>
