@@ -5,11 +5,7 @@ class Alert extends Component {
         value: PropTypes.string.isRequired,
         visible: PropTypes.bool.isRequired,
         type: PropTypes.string.isRequired,
-        context: PropTypes.object.isRequired
-    }
-
-    hide() {
-        this.props.context.alert("", false, "");
+        hide: PropTypes.func.isRequired
     }
 
     render() {
@@ -18,7 +14,7 @@ class Alert extends Component {
                 {this.props.visible ? <div
                     className={this.props.type === "error" ? "alert alert-danger" :
                         "alert alert-success"} role="alert"
-                    onClick={this.hide.bind(this)}
+                    onClick={this.props.hide}
                     >{this.props.value}</div> : ""}
             </div>
         )

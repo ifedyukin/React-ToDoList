@@ -1,83 +1,54 @@
 import React, { Component } from 'react';
 import { Router, Route, hashHistory } from 'react-router';
 
-import './App.css';
-import New from './New';
-import List from './List';
-import LeftItems from './LeftItems';
-import ListSelector from './ListSelector';
-import GlobalAction from './GlobalAction';
-import Alert from './Alert';
-import { storeGet, storeSave } from './Store';
-import { Search } from './Seach';
-
-//Func for display all items
-const filterAll = function () {
-  return (
-    <div className="panel panel-default">
-      <div className="panel-body">
-        <List items={Search(this.state.items, this.state.search)} type="all" context={this} />
-        <Alert value={this.state.alert.value} visible={this.state.alert.visible}
-          context={this} type={this.state.alert.type} />
-      </div>
-
-      <div className="panel-footer">
-        <LeftItems value={this.state.leftCount} />
-        <ListSelector active="all" />
-        <GlobalAction context={this} />
-      </div>
-    </div >
-  )
-}
-
-//Func for display only active items
-const filterActive = function () {
-  return (
-    <div className="panel panel-default">
-      <div className="panel-body">
-        <List items={Search(this.state.items, this.state.search)} type="active" context={this} />
-        <Alert value={this.state.alert.value} visible={this.state.alert.visible}
-          context={this} type={this.state.alert.type} />
-      </div>
-
-      <div className="panel-footer">
-        <LeftItems value={this.state.leftCount} />
-        <ListSelector active="active" />
-        <GlobalAction context={this} />
-      </div>
-    </div >
-  )
-}
-
-//Func for display only completed items
-const filterCompleted = function () {
-  return (
-    <div className="panel panel-default">
-      <div className="panel-body">
-        <List items={Search(this.state.items, this.state.search)} type="completed" context={this} />
-        <Alert value={this.state.alert.value} visible={this.state.alert.visible}
-          context={this} type={this.state.alert.type} />
-      </div>
-
-      <div className="panel-footer">
-        <LeftItems value={this.state.leftCount} />
-        <ListSelector active="completed" />
-        <GlobalAction context={this} />
-      </div>
-    </div >
-  )
-}
+import './ToDoList.css';
+import New from '../components/New';
+import List from '../components/List';
+import LeftItems from '../components/LeftItems';
+import ListSelector from '../components/ListSelector';
+import GlobalAction from '../components/GlobalAction';
+import Alert from '../components/Alert';
+import { storeGet, storeSave } from '../utils/Store';
+import { Search } from '../utils/Search';
 
 //"Generate" key for Router
 let reloadCounter = 0;
 
+//Route view. Return main components
+const routeComponent = function (type, context) {
+  return (
+    <div className="panel panel-default">
+      <div className="panel-body">
+        <List type={type}
+          items={Search(context.state.items, context.state.search)}
+          checkItem={context.checkItem}
+          deleteItem={context.deleteItem}
+          editItem={context.editItem} />
+
+        <Alert value={context.state.alert.value}
+          visible={context.state.alert.visible}
+          hide={() => context.alert("", false, "")}
+          type={context.state.alert.type} />
+      </div>
+
+      <div className="panel-footer">
+        <LeftItems value={context.state.leftCount} />
+        <ListSelector active={type} />
+
+        <GlobalAction
+          deleteCompleted={context.deleteCompleted}
+          checkAll={context.checkAll} />
+      </div>
+    </div >
+  )
+}
+
 /* App */
-class App extends Component {
+class ToDoList extends Component {
   constructor(props) {
     super(props);
     this.state = {
       search: '',
-      active: 'all',
       items: storeGet() === null ? [] : storeGet(),
       leftCount: this.countLeft(storeGet()),
       alert: {
@@ -87,6 +58,12 @@ class App extends Component {
       }
     }
 
+    //Bind context
+    this.checkItem = this.checkItem.bind(this);
+    this.deleteItem = this.deleteItem.bind(this);
+    this.editItem = this.editItem.bind(this);
+    this.handleSearch = this.handleSearch.bind(this);
+    this.handleAdd = this.handleAdd.bind(this);
     this.deleteCompleted = this.deleteCompleted.bind(this);
     this.checkAll = this.checkAll.bind(this);
   }
@@ -94,6 +71,7 @@ class App extends Component {
   //Return counter of active items
   countLeft(items) {
     let count = 0;
+
     if (items === undefined || items === null) {
       count = 0;
     } else {
@@ -121,13 +99,16 @@ class App extends Component {
     } else {
       let newId = 0;
       let itemsList = this.state.items;
+
       if (itemsList[itemsList.length - 1] !== undefined) {
         newId = itemsList[itemsList.length - 1].id + 1
       } else {
         newId = 1;
       }
+
       var newItem = new listItem(newId, item);
       itemsList.push(newItem);
+
       this.setState({ items: itemsList });
       this.setState(({ leftCount: this.countLeft(itemsList) }));
       this.setState({ search: '' });
@@ -160,11 +141,13 @@ class App extends Component {
   //Delete item func
   deleteItem(id) {
     let itemsList = this.state.items;
+
     for (let i = 0; i < itemsList.length; i++) {
       if (itemsList[i].id === id) {
         itemsList.splice(i, 1);
       }
     }
+
     this.setState({ search: this.state.search });
     this.setState({ items: itemsList });
     this.setState(({ leftCount: this.countLeft(this.state.items) }));
@@ -179,11 +162,13 @@ class App extends Component {
       this.alert("Empty value for item!", true, "error");
     } else {
       let itemsList = this.state.items;
+
       for (let i = 0; i < itemsList.length; i++) {
         if (itemsList[i].id === id) {
           itemsList[i].value = value;
         }
       }
+
       this.setState({ search: this.state.search });
       this.setState({ items: itemsList });
       storeSave(this.state.items);
@@ -212,12 +197,14 @@ class App extends Component {
   //Delete completed items func
   deleteCompleted() {
     let itemsList = this.state.items;
+
     for (let i = 0; i < itemsList.length; i++) {
       if (itemsList[i].checked) {
         itemsList.splice(i, 1);
         i -= 1;
       }
     }
+
     this.setState({ items: itemsList });
     this.setState(({ leftCount: this.countLeft(itemsList) }));
     this.setState({ search: '' });
@@ -229,6 +216,7 @@ class App extends Component {
   //Func for check all items
   checkAll() {
     let itemsList = this.state.items;
+
     for (let i = 0; i < itemsList.length; i++) {
       itemsList[i].checked = true;
     }
@@ -245,11 +233,14 @@ class App extends Component {
     return (
       <section>
         <h1>ToDo List</h1>
-        <New context={this} value={this.state.search} />
+        <New value={this.state.search}
+          handleAdd={this.handleAdd}
+          handleSearch={this.handleSearch} />
+
         <Router history={hashHistory} key={reloadCounter}>
-          <Route path="/" component={filterAll.bind(this)} />
-          <Route path="/active" component={filterActive.bind(this)} />
-          <Route path="/completed" component={filterCompleted.bind(this)} />
+          <Route path="/" component={() => routeComponent("all", this)} />
+          <Route path="/active" component={() => routeComponent("active", this)} />
+          <Route path="/completed" component={() => routeComponent("completed", this)} />
         </Router>
       </section>
     )
@@ -257,4 +248,4 @@ class App extends Component {
 
 }
 
-export default App;
+export default ToDoList;

@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component, PropTypes } from 'react';
 
 class Item extends Component {
     constructor(props) {
@@ -12,16 +12,13 @@ class Item extends Component {
         this.handleTyping = this.handleTyping.bind(this);
     }
 
-    check() {
-        this.props.context.checkItem(this.props.id);
-    }
-
-    delete() {
-        this.props.context.deleteItem(this.props.id);
-    }
-
-    edit() {
-        this.setState({ editable: true });
+    static propTypes = {
+        id: PropTypes.number.isRequired,
+        value: PropTypes.string.isRequired,
+        checked: PropTypes.bool.isRequired,
+        checkItem: PropTypes.func.isRequired,
+        deleteItem: PropTypes.func.isRequired,
+        editItem: PropTypes.func.isRequired
     }
 
     handleTyping(event) {
@@ -30,27 +27,30 @@ class Item extends Component {
 
     handleSubmit(event) {
         event.preventDefault();
-        this.props.context.editItem(this.props.id, this.state.value);
+        this.props.editItem(this.props.id, this.state.value);
     }
 
     render() {
         return (
-            <li onDoubleClick={this.edit.bind(this)} className={this.props.checked ? "list-group-item checked" : "list-group-item"}>
+            <li onDoubleClick={() => this.setState({ editable: true })}
+                className={this.props.checked ? "list-group-item checked" : "list-group-item"}>
+
                 <button className="btn check_btn" type="button"
-                    onClick={this.check.bind(this)}>
+                    onClick={() => this.props.checkItem(this.props.id)}>
                     <span className="glyphicon glyphicon-ok" aria-hidden="true"></span>
                 </button>
+
                 {this.state.editable ? <form onSubmit={this.handleSubmit}>
                     <input className="editableItem form-control"
                         type="text" autoFocus
                         value={this.state.value}
-                        onChange={this.handleTyping} 
-                        placeholder={this.props.value}/> </form> :
+                        onChange={this.handleTyping}
+                        placeholder={this.props.value} /> </form> :
                     <span>{this.props.value}</span>}
 
                 {this.state.editable ? "" :
                     <button className="btn delete_btn" type="button"
-                        onClick={this.delete.bind(this)}>
+                        onClick={() => this.props.deleteItem(this.props.id)}>
                         <span className="glyphicon glyphicon-remove" aria-hidden="true"></span>
                     </button>}
 

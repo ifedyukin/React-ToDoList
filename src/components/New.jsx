@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component, PropTypes } from 'react';
 
 class New extends Component {
     constructor(props) {
@@ -10,16 +10,21 @@ class New extends Component {
         this.handleSubmit = this.handleSubmit.bind(this);
         this.handleTyping = this.handleTyping.bind(this);
     }
+    
+    static propTypes = {
+        handleSearch: PropTypes.func.isRequired,
+        handleAdd: PropTypes.func.isRequired
+    }
 
     handleSubmit(event) {
         event.preventDefault();
-        this.props.context.handleAdd(this.state.value);
+        this.props.handleAdd(this.state.value);
         this.setState({ value: '' });
     }
 
     handleTyping(event) {
         this.setState({ value: event.target.value });
-        this.props.context.handleSearch(event.target.value);
+        this.props.handleSearch(event.target.value);
     }
 
     render() {
