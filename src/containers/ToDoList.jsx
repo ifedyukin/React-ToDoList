@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { Router, Route, hashHistory } from 'react-router';
 
-import '../css/ToDoList.css';
+import '../styles/ToDoList.css';
 import New from '../components/New';
 import List from '../components/List';
 import LeftItems from '../components/LeftItems';

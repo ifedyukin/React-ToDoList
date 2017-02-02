@@ -22,6 +22,7 @@ body{
 section{
     width: 600px;
     margin: 25px auto;
+    height: 576px;
 }
 
 .items_list{
@@ -52,10 +53,10 @@ section{
     background: none;
     color: darkgrey;
     border: none;
-    float: right;
+    position: absolute;
     padding: 0;
-    margin-right: -7px;
-    margin-top: 3px;
+    right: 7px;
+    margin-left: 5px;
 }
 
 .delete_btn:hover{
@@ -63,6 +64,7 @@ section{
 }
 
 .list-group-item{
+    word-wrap:break-word;
     cursor: pointer;
 }
 
@@ -119,4 +121,71 @@ section{
     position: absolute;
     width: 567px;
     margin: 17px 16px;
+}
+
+@media screen and (max-width: 605px) {
+    body{
+        position: fixed;
+        height: 100%; 
+        width: 100%;
+        overflow-x: hidden;
+    }
+
+    section{
+        overflow-x: hidden;
+        width: 100%; 
+        margin: 0; 
+        min-width: 320px;
+        height: 100%;
+    }
+    
+    .panel-footer {
+        width: 100%;
+        position: absolute;
+        bottom: 0;
+        border: none;
+     }
+
+     .panel-body{
+         height: 100%;
+     }
+
+     .panel, .panel-default{
+         height: 100%;
+         width: 100%;
+         border: none;
+     }
+
+     .panel-footer:after{
+        display: block;
+        content: "";
+        clear: both;
+     }
+
+    .alert{
+        width: 92.5%; 
+        bottom: 40px;
+        position: absolute; 
+     }
+     
+    .searchNoResult{
+        font-size: 90%;
+        display: block;
+        width: 92.5%; 
+        float: right;
+        margin-top: 50px 
+    }
+
+    .input-group {
+        width: auto; 
+        position: absolute;
+    }
+
+    .left_count{
+        display: none;
+    }
+}
+
+@viewport {
+  user-zoom: fixed;
 }
