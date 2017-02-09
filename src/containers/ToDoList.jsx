@@ -10,6 +10,7 @@ import GlobalAction from '../components/GlobalAction';
 import Alert from '../components/Alert';
 import { storeGet, storeSave } from '../utils/Store';
 import { Search } from '../utils/Search';
+import { isBlank } from '../utils/IsBlank';
 
 //"Generate" key for Router
 let reloadCounter = 0;
@@ -94,7 +95,7 @@ class ToDoList extends Component {
       }
     }
 
-    if (item.length === 0) {
+    if (!isBlank(item)) {
       this.alert("Empty value for item!", true, "error");
     } else {
       let newId = 0;
