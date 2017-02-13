@@ -40,7 +40,7 @@ const routeComponent = function (type, context) {
           deleteCompleted={context.deleteCompleted}
           checkAll={context.checkAll} />
       </div>
-    </div >
+    </div>
   )
 }
 
