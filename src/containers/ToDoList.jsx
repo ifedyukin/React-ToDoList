@@ -96,6 +96,7 @@ class ToDoList extends Component {
     }
 
     if (!isBlank(item)) {
+      this.setState({ search: '' });
       this.alert("Empty value for item!", true, "error");
     } else {
       let newId = 0;
