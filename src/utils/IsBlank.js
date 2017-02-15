@@ -1,5 +1,9 @@
+export function removeSpaces(string) {
+        return string.replace(/\s{2,}/g, ' ');
+}
+
 export function isBlank(string) {
-        string = string.replace(/\s{2,}/g, ' ');
+        string = removeSpaces(string);
 
         return string !== ' ' && string !== '';
     }
