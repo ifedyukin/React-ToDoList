@@ -3,5 +3,4 @@ node_js:
 - '6.2'
 script:
 - npm install
-- react-scripts start
 - react-scripts build
