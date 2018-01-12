@@ -17,7 +17,7 @@
 * "npm start"
 * "npm run build"
 
-## Applictation
+## Application
 
 ### Search and Add  
 Type text for search and/or press "Enter" to add an list item    
